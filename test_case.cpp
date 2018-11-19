@@ -12,7 +12,12 @@ int main(void)
 	/* Initialize the library */
 	if (!glfwInit())
 		return -1;
-
+ 
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+ 
 	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
 	if (!window)
@@ -67,14 +72,37 @@ int main(void)
 		unsigned int vs = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vs, 1, &src_v, NULL);
 		glCompileShader(vs);
+ 
+		int success;
+	    char infoLog[512];
+	    glGetShaderiv(vs, GL_COMPILE_STATUS, &success);
+	    if (!success)
+	    {
+	        glGetShaderInfoLog(vs, 512, NULL, infoLog);
+	        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+		}
 
 		unsigned int fs = glCreateShader(GL_FRAGMENT_SHADER);
 		glShaderSource(fs, 1, &src_f, NULL);
 		glCompileShader(fs);
 
+		glGetShaderiv(fs, GL_COMPILE_STATUS, &success);
+	    if (!success)
+	    {
+	        glGetShaderInfoLog(fs, 512, NULL, infoLog);
+	        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+		}
+
 		glAttachShader(program, vs);
 		glAttachShader(program, fs);
 		glLinkProgram(program);
+ 
+		glGetProgramiv(program, GL_LINK_STATUS, &success);
+	    if (!success)  
+		{
+	        glGetProgramInfoLog(program, 512, NULL, infoLog);
+	        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+		}
 		glUseProgram(program);
 
 		glDeleteShader(vs);
