@@ -1,8 +1,5 @@
-#define GLEW_STATIC
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #include <iostream>
 
 int main(void)
@@ -34,6 +31,10 @@ int main(void)
 		return -1;
 
 	std::cout << glGetString(GL_VERSION) << std::endl;
+
+    GLuint vao = 0;
+    glCreateVertexArrays( 1, &vao );
+    glBindVertexArray( vao );	
 
 	{
 		float position[] =
